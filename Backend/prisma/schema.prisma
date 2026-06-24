@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        Int         @id @default(autoincrement())
+  nama      String
+  email     String      @unique
+  password  String
+  alamat    String?
+  transaksi Transaksi[]
+  refreshTokens RefreshToken[]
+  deletedAt DateTime?
+  createdAt DateTime    @default(now())
+
+  @@map("users")
+}
+
+model JenisSampah {
+  id         Int         @id @default(autoincrement())
+  kategori   String      @unique
+  hargaPerKg Float       @map("harga_per_kg")
+  transaksi  Transaksi[]
+
+  @@map("jenis_sampah")
+}
+
+model Transaksi {
+  id            Int         @id @default(autoincrement())
+  userId        Int         @map("user_id")
+  user          User        @relation(fields: [userId], references: [id])
+  jenisSampahId Int         @map("jenis_sampah_id")
+  jenisSampah   JenisSampah @relation(fields: [jenisSampahId], references: [id])
+  kategori      String
+  confidence    Float
+  beratKg       Float       @map("berat_kg")
+  hargaPerKg    Float       @map("harga_per_kg")
+  nominal       Float
+  gambarPath    String      @map("gambar_path")
+  createdAt     DateTime    @default(now())
+
+  @@map("transaksi")
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int      @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now())
+
+  @@map("refresh_tokens")
+}
