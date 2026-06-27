@@ -1,15 +1,15 @@
 const prisma = require('../config/prisma');
 
 exports.findByEmail = (email) => {
-  return prisma.user.findUnique({ where: { email, deletedAt: null } });
+  return prisma.user.findFirst({ where: { email, deletedAt: null } });
 };
 
 exports.findById = (id) => {
-  return prisma.user.findUnique({ where: { id, deletedAt: null } });
+  return prisma.user.findFirst({ where: { id, deletedAt: null } });
 };
 
 exports.findByIdSafe = (id) => {
-  return prisma.user.findUnique({
+  return prisma.user.findFirst({
     where: { id, deletedAt: null },
     select: { id: true, nama: true, email: true, alamat: true, createdAt: true },
   });
@@ -20,7 +20,7 @@ exports.create = (data) => {
 };
 
 exports.update = (id, data) => {
-  return prisma.user.update({ where: { id, deletedAt: null }, data });
+  return prisma.user.update({ where: { id }, data });
 };
 
 exports.delete = (id) => {
