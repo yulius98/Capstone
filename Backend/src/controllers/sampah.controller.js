@@ -7,10 +7,11 @@ exports.klasifikasiSampah = async (req, res, next) => {
       return error(res, 'Gambar wajib diupload', 400);
     }
 
-    const { beratKg, userId } = req.body;
+    const { beratKg } = req.body;
+    const userId = req.user.id;
 
-    if (!beratKg || !userId) {
-      return error(res, 'beratKg dan userId wajib diisi', 400);
+    if (!beratKg) {
+      return error(res, 'beratKg wajib diisi', 400);
     }
 
     const hasil = await sampahService.prosesKlasifikasi({

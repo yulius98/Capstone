@@ -48,7 +48,7 @@ exports.login = async ({ email, password }) => {
   return {
     accessToken,
     refreshToken,
-    // user: { id: user.id, nama: user.nama, email: user.email },
+    user: { id: user.id, nama: user.nama, email: user.email },
   };
 };
 
