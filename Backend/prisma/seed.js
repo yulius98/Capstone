@@ -1,4 +1,5 @@
 require('dotenv').config();
+const bcrypt = require('bcrypt');
 const { PrismaClient } = require('@prisma/client');
 const { Pool } = require('pg');
 const { PrismaPg } = require('@prisma/adapter-pg');
@@ -8,6 +9,14 @@ const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
+  await prisma.userRole.createMany({
+    data: [
+      { role: 'User' },
+      { role: 'Admin' },
+    ],
+    skipDuplicates: true,
+  });
+
   await prisma.jenisSampah.createMany({
     data: [
       { kategori: 'plastik', hargaPerKg: 2000 },
@@ -17,6 +26,19 @@ async function main() {
       { kategori: 'kaca', hargaPerKg: 6000}
     ],
     skipDuplicates: true,
+  });
+
+  const hashedPassword = await bcrypt.hash('Capstone123', 10);
+
+  await prisma.user.upsert({
+    where: { email: 'admin@pilahpinter.com' },
+    update: {},
+    create: {
+      nama: 'Admin',
+      email: 'admin@pilahpinter.com',
+      password: hashedPassword,
+      roleId: 2,
+    },
   });
 }
 

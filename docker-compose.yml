@@ -3,7 +3,7 @@ services:
     image: postgres:16-alpine
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: Laravel12
       POSTGRES_DB: bank_sampah
     ports:
       - "5432:5432"
@@ -29,10 +29,10 @@ services:
     environment:
       PORT: 5000
       NODE_ENV: production
-      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/bank_sampah?schema=public"
-      JWT_SECRET: "ganti-dengan-random-secret-panjang"
+      DATABASE_URL: "postgresql://postgres:Laravel12@postgres:5432/bank_sampah?schema=public"
+      JWT_SECRET: "5d2d8bd73e1f7aac74ad938cc84cd24d0be2f945dfe61c93a45dfd0b8f5ff50af364d565d13cd907a45dae2a33b6ddf0f235062dbabd8bb44d5e76650474f8ec"
       JWT_ACCESS_EXPIRES_IN: 1h
-      JWT_REFRESH_SECRET: "ganti-dengan-random-refresh-secret-panjang"
+      JWT_REFRESH_SECRET: "41957a282550e9aba713ad7abc43274dbdfd1018a8eea0325740f73d043cce52b0d9532393d224d99b5a9fc813dd529cc0c2d373bcc33b9c5d0511d929c4acb0"
       JWT_REFRESH_EXPIRES_IN: 30d
       AI_SERVICE_URL: "http://mock-ai:8000/predict"
       AI_SERVICE_TIMEOUT: 15000

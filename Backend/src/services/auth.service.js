@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const prisma = require('../config/prisma');
 const userRepository = require('../repositories/user.repository');
 const refreshTokenRepository = require('../repositories/refreshToken.repository');
 const {
@@ -15,7 +16,10 @@ exports.register = async ({ nama, email, password, alamat }) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const user = await userRepository.create({ nama, email, password: hashedPassword, alamat });
+  const defaultRole = await prisma.userRole.findFirst({ where: { role: 'User' } });
+  const roleId = defaultRole?.id;
+
+  const user = await userRepository.create({ nama, email, password: hashedPassword, alamat, roleId });
 
   return { id: user.id, nama: user.nama, email: user.email };
 };
