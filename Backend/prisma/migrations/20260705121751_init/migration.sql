@@ -4,10 +4,22 @@ CREATE TABLE "users" (
     "nama" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "alamat" TEXT NOT NULL,
+    "alamat" TEXT,
+    "role_id" INTEGER NOT NULL,
+    "deletedAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "user_role" (
+    "id" SERIAL NOT NULL,
+    "role" TEXT NOT NULL,
+    "deletedAt" TIMESTAMP(3),
+    "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "user_role_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -54,6 +66,9 @@ CREATE UNIQUE INDEX "jenis_sampah_kategori_key" ON "jenis_sampah"("kategori");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "refresh_tokens_token_key" ON "refresh_tokens"("token");
+
+-- AddForeignKey
+ALTER TABLE "users" ADD CONSTRAINT "users_role_id_fkey" FOREIGN KEY ("role_id") REFERENCES "user_role"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "transaksi" ADD CONSTRAINT "transaksi_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

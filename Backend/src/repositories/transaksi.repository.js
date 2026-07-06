@@ -4,17 +4,29 @@ exports.create = (data) => {
   return prisma.transaksi.create({ data });
 };
 
-exports.findAll = () => {
+exports.findAll = (skip, take) => {
   return prisma.transaksi.findMany({
+    skip,
+    take,
     include: { user: true, jenisSampah: true },
     orderBy: { createdAt: 'desc' },
   });
 };
 
-exports.findByUserId = (userId) => {
+exports.countAll = () => {
+  return prisma.transaksi.count();
+};
+
+exports.findByUserId = (userId, skip, take) => {
   return prisma.transaksi.findMany({
     where: { userId },
+    skip,
+    take,
     include: { jenisSampah: true },
     orderBy: { createdAt: 'desc' },
   });
+};
+
+exports.countByUserId = (userId) => {
+  return prisma.transaksi.count({ where: { userId } });
 };

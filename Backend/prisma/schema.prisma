@@ -17,12 +17,24 @@ model User {
   email     String      @unique
   password  String
   alamat    String?
+  roleId    Int         @map("role_id")
+  role      UserRole    @relation(fields: [roleId], references: [id])
   transaksi Transaksi[]
   refreshTokens RefreshToken[]
   deletedAt DateTime?
   createdAt DateTime    @default(now())
 
   @@map("users")
+}
+
+model UserRole {
+  id    Int     @id @default(autoincrement())
+  role  String
+  users User[]
+  deletedAt DateTime?
+  createAt  DateTime  @default(now())
+
+  @@map("user_role")
 }
 
 model JenisSampah {
