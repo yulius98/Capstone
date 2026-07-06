@@ -1,13 +1,15 @@
 # Pilah Pintar — Backend API
 
-Backend untuk aplikasi **Bank Sampah Pilah Pintar**. Mengelola autentikasi user, klasifikasi sampah berbasis AI, serta pencatatan transaksi.
+Backend untuk aplikasi **Bank Sampah Pilah Pintar**. Mengelola autentikasi user, klasifikasi sampah berbasis AI, pencatatan transaksi, serta manajemen jenis sampah dan role user.
 
 ## Fitur
 
 - **Autentikasi** — Register, login, refresh token, logout (JWT access + refresh token)
-- **Klasifikasi Sampah** — Upload gambar sampah, AI mengklasifikasikan kategori (plastik/kertas/logam/organik/kaca), otomatis menghitung nominal berdasarkan harga per kg
+- **User Role** — Role-based user (`User` / `Admin`), default `User` saat register
 - **Manajemen Profil** — Lihat, edit, dan hapus akun (soft delete)
-- **Riwayat Transaksi** — Lihat semua transaksi atau filter per user
+- **Klasifikasi Sampah** — Upload gambar sampah, AI mengklasifikasikan kategori, otomatis menghitung nominal
+- **Riwayat Transaksi** — Lihat semua transaksi atau filter per user, dengan **pagination** (10 data/halaman)
+- **CRUD Jenis Sampah** — Kelola data kategori sampah beserta harga per kg
 
 ## Tech Stack
 
@@ -24,8 +26,6 @@ Backend untuk aplikasi **Bank Sampah Pilah Pintar**. Mengelola autentikasi user,
 
 ## Arsitektur
 
-Aplikasi menggunakan **Layered Architecture**:
-
 ```
 Routes → Controllers → Services → Repositories → Prisma → PostgreSQL
 ```
@@ -40,6 +40,11 @@ Routes → Controllers → Services → Repositories → Prisma → PostgreSQL
 | Config | `src/config/` | Prisma client, Multer upload |
 
 ## API Endpoints
+
+Semua endpoint (kecuali Auth) memerlukan header:
+```
+Authorization: Bearer <accessToken>
+```
 
 ### Auth (`/api/auth`)
 
@@ -58,6 +63,16 @@ Routes → Controllers → Services → Repositories → Prisma → PostgreSQL
 | PUT | `/profile` | ✅ | Edit profil (nama/email/alamat) |
 | DELETE | `/profile` | ✅ | Hapus akun (soft delete) |
 
+### Jenis Sampah (`/api/jenis-sampah`)
+
+| Method | Endpoint | Auth | Deskripsi |
+|--------|----------|------|-----------|
+| GET | `/` | ✅ | Lihat semua jenis sampah |
+| GET | `/:id` | ✅ | Detail jenis sampah |
+| POST | `/` | ✅ | Tambah jenis sampah baru |
+| PUT | `/:id` | ✅ | Edit jenis sampah |
+| DELETE | `/:id` | ✅ | Hapus jenis sampah |
+
 ### Sampah (`/api/sampah`)
 
 | Method | Endpoint | Auth | Deskripsi |
@@ -68,8 +83,43 @@ Routes → Controllers → Services → Repositories → Prisma → PostgreSQL
 
 | Method | Endpoint | Auth | Deskripsi |
 |--------|----------|------|-----------|
-| GET | `/` | ✅ | Semua transaksi |
-| GET | `/user/:userId` | ✅ | Transaksi per user |
+| GET | `/` | ✅ | Semua transaksi (pagination: `?page=1`) |
+| GET | `/user/:userId` | ✅ | Transaksi per user (pagination: `?page=1`) |
+
+Response transaksi menyertakan metadata pagination:
+```json
+{
+  "success": true,
+  "message": "Berhasil",
+  "data": {
+    "data": [...],
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "totalData": 45,
+      "totalPages": 5
+    }
+  }
+}
+```
+
+## Database Schema
+
+### Tables
+
+| Table | Keterangan |
+|-------|------------|
+| `users` | User (dengan role_id, soft delete) |
+| `user_role` | Role user (User / Admin) |
+| `jenis_sampah` | Kategori sampah & harga per kg |
+| `transaksi` | Riwayat transaksi klasifikasi |
+| `refresh_tokens` | Token refresh untuk JWT |
+
+### Relasi
+
+- `users` → `user_role` (many-to-one)
+- `transaksi` → `users` (many-to-one)
+- `transaksi` → `jenis_sampah` (many-to-one)
 
 ## Instalasi
 
@@ -115,8 +165,22 @@ Server akan berjalan di `http://localhost:5000`.
 
 ### Seed Data
 
-Menambahkan data awal jenis sampah beserta harga per kg:
+Menambahkan data awal setelah migrasi:
 
+**User Role:**
+| Role | ID |
+|------|----|
+| User | 1 |
+| Admin | 2 |
+
+**Admin User:**
+| Field | Value |
+|-------|-------|
+| Email | admin@pilahpinter.com |
+| Password | Capstone123 |
+| Role | Admin |
+
+**Jenis Sampah:**
 | Kategori | Harga/Kg |
 |----------|----------|
 | Plastik | Rp 2.000 |

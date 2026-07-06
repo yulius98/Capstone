@@ -27,15 +27,15 @@ exports.register = async ({ nama, email, password, alamat }) => {
 exports.login = async ({ email, password }) => {
   const user = await userRepository.findByEmail(email);
   if (!user) {
-    throw new Error('Email atau password salah');
+    throw new Error("Email atau password salah");
   }
 
   const isValid = await bcrypt.compare(password, user.password);
   if (!isValid) {
-    throw new Error('Email atau password salah');
+    throw new Error("Email atau password salah");
   }
 
-  const payload = { id: user.id };
+  const payload = { id: user.id, roleId: user.roleId };
 
   const accessToken = generateAccessToken(payload);
   const refreshToken = generateRefreshToken(payload);
@@ -58,29 +58,29 @@ exports.login = async ({ email, password }) => {
 
 exports.refreshAccessToken = async (refreshToken) => {
   if (!refreshToken) {
-    throw new Error('Refresh token wajib diisi');
+    throw new Error("Refresh token wajib diisi");
   }
 
   const stored = await refreshTokenRepository.findByToken(refreshToken);
   if (!stored) {
-    throw new Error('Refresh token tidak valid');
+    throw new Error("Refresh token tidak valid");
   }
 
   if (stored.expiresAt < new Date()) {
     await refreshTokenRepository.deleteById(stored.id);
-    throw new Error('Refresh token sudah expired, silakan login ulang');
+    throw new Error("Refresh token sudah expired, silakan login ulang");
   }
 
   let decoded;
   try {
     decoded = verifyRefreshToken(refreshToken);
   } catch (err) {
-    throw new Error('Refresh token tidak valid', {cause:err});
+    throw new Error("Refresh token tidak valid", { cause: err });
   }
 
   const newAccessToken = generateAccessToken({
     id: decoded.id,
-    email: decoded.email,
+    roleId: decoded.roleId,
   });
 
   return { accessToken: newAccessToken };
