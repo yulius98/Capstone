@@ -10,7 +10,7 @@ RUN npm ci --omit=dev
 
 COPY mock-ai-server.js .
 
-RUN mkdir -p mock-uploads
+RUN mkdir -p mock-uploads && chown -R node:node mock-uploads
 
 USER node
 
