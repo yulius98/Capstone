@@ -258,6 +258,40 @@ Authorization: Bearer <accessToken>
 | Field | Type | Keterangan |
 |-------|------|------------|
 | `gambar` | File (jpeg/jpg/png/webp, max 5MB) | Gambar sampah |
+
+---
+
+## Transaksi (`/api/transaksi`)
+
+| Method | Endpoint | Auth | Deskripsi |
+|--------|----------|------|-----------|
+| GET | `/api/transaksi` | JWT | Lihat semua transaksi |
+| GET | `/api/transaksi/:id` | JWT | Detail transaksi |
+| GET | `/api/transaksi/user/:userId` | JWT | Lihat transaksi per user |
+| GET | `/api/transaksi/:id/gambar` | JWT | Ambil file gambar transaksi |
+
+### GET `/api/transaksi/:id`
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Berhasil",
+  "data": {
+    "id": 1,
+    "userId": 2,
+    "jenisSampahId": 3,
+    "kategori": "plastik",
+    "confidence": 0.98,
+    "beratKg": 1.5,
+    "hargaPerKg": 2000,
+    "nominal": 3000,
+    "gambarPath": "src/uploads/....",
+    "createdAt": "datetime",
+    "jenisSampah": { "id": 3, "kategori": "plastik", "hargaPerKg": 2000 }
+  }
+}
+```
 | `beratKg` | Number | Berat sampah dalam kg |
 
 `userId` diambil otomatis dari token JWT.

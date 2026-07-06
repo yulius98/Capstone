@@ -17,6 +17,13 @@ exports.countAll = () => {
   return prisma.transaksi.count();
 };
 
+exports.findById = (id) => {
+  return prisma.transaksi.findUnique({
+    where: { id },
+    include: { jenisSampah: true },
+  });
+};
+
 exports.findByUserId = (userId, skip, take) => {
   return prisma.transaksi.findMany({
     where: { userId },
