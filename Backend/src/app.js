@@ -16,7 +16,7 @@ const app = express();
 app.use(helmet());
 const allowedOrigins = new Set([
   "http://localhost:5173",
-  "https://pilah-pinter-fe.vercel.app",
+  "https://pilah-pinter-fe.vercel.app/",
 ]);
 
 app.use(
