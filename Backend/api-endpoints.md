@@ -269,6 +269,50 @@ Authorization: Bearer <accessToken>
 | GET | `/api/transaksi/:id` | JWT | Detail transaksi |
 | GET | `/api/transaksi/user/:userId` | JWT | Lihat transaksi per user |
 | GET | `/api/transaksi/:id/gambar` | JWT | Ambil file gambar transaksi |
+| POST | `/api/transaksi/submit` | JWT | submit transaksi (set `sudahFinal = true`) |
+
+### POST `/api/transaksi/submit`
+
+**Content-Type:** `application/json`
+
+**Body (JSON):**
+```json
+{
+  "id": 1
+}
+```
+
+| Field | Type | Keterangan |
+|-------|------|------------|
+| `id` | Number (wajib) | ID transaksi yang akan disubmit |
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Transaksi berhasil disubmit!",
+  "data": {
+    "id": 1,
+    "userId": 2,
+    "jenisSampahId": 3,
+    "kategori": "plastik",
+    "confidence": 0.98,
+    "beratKg": 1.5,
+    "hargaPerKg": 2000,
+    "nominal": 3000,
+    "gambarPath": "filename.jpg",
+    "sudahFinal": true,
+    "createdAt": "datetime"
+  }
+}
+```
+
+**Error responses:**
+| Status | Kondisi | Pesan |
+|--------|---------|-------|
+| 400 | `id` tidak dikirim di body | `Field "id" wajib dikirim di body request` |
+| 404/500 | Transaksi tidak ditemukan | `Transaksi tidak ditemukan` |
+| 400/500 | Transaksi sudah final | `Transaksi sudah final` |
 
 ### GET `/api/transaksi/:id`
 
@@ -384,4 +428,7 @@ Authorization: Bearer <accessToken>
 | 12 | DELETE | `/api/jenis-sampah/:id` | ✓ (Admin) | Hapus jenis sampah |
 | 13 | POST | `/api/sampah/klasifikasi` | ✓ | Klasifikasi sampah |
 | 14 | GET | `/api/transaksi` | ✓ | Semua transaksi (pagination) |
-| 15 | GET | `/api/transaksi/user/:userId` | ✓ | Transaksi per user (pagination) |
+| 15 | GET | `/api/transaksi/:id` | ✓ | Detail transaksi |
+| 16 | GET | `/api/transaksi/user/:userId` | ✓ | Transaksi per user (pagination) | 
+| 17 | GET | `/api/transaksi/:id/gambar` | ✓ | Ambil file gambar transaksi |
+| 18 | POST | `/api/transaksi/submit` | ✓ | Submit/finalisasi transaksi |

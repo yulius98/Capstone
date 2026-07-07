@@ -31,6 +31,16 @@ exports.getGambar = async (req, res, next) => {
   }
 };
 
+exports.postSubmitTransaksi = async (req, res, next) => {
+  try {
+    const { id } = req.body;
+    const result = await transaksiService.postSubmitTransaksi(id);
+    return success(res, result, 'Transaksi berhasil disubmit!');
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.getTransaksiByUser = async (req, res, next) => {
   try {
     const { userId } = req.params;

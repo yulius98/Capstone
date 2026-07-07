@@ -25,6 +25,7 @@ exports.prosesKlasifikasi = async ({ filePath, fileName, beratKg, userId }) => {
     hargaPerKg: jenis.hargaPerKg,
     nominal,
     gambarPath: fileName,
+    sudahFinal: false,
   });
 
   return {

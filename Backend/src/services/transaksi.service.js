@@ -41,6 +41,19 @@ exports.getTransaksiById = async (id) => {
   return transaksi;
 };
 
+exports.postSubmitTransaksi = async (id) => {
+  const transaksi = await transaksiRepository.findById(Number(id));
+  if (!transaksi) {
+    throw new Error('Transaksi tidak ditemukan');
+  }
+
+  if (transaksi.sudahFinal) {
+    throw new Error('Transaksi sudah final');
+  }
+
+  return transaksiRepository.submitTransaksi(Number(id));
+};
+
 exports.getTransaksiByUser = async (userId, page = 1) => {
   const skip = (page - 1) * LIMIT;
 

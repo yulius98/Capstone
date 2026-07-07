@@ -58,6 +58,7 @@ model Transaksi {
   hargaPerKg    Float       @map("harga_per_kg")
   nominal       Float
   gambarPath    String      @map("gambar_path")
+  sudahFinal    Boolean     @default(false) @map("sudah_final")
   createdAt     DateTime    @default(now())
 
   @@map("transaksi")
