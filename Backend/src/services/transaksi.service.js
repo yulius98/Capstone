@@ -1,5 +1,4 @@
-const transaksiRepository = require('../repositories/transaksi.repository');
-
+const transaksiRepository = require("../repositories/transaksi.repository");
 const LIMIT = 10;
 
 exports.getAllTransaksi = async (page = 1) => {
