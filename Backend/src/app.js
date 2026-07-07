@@ -10,27 +10,37 @@ const transaksiRoutes = require('./routes/transaksi.routes');
 const userRoutes = require('./routes/user.routes');
 const jenisSampahRoutes = require('./routes/jenisSampah.routes');
 const errorHandler = require('./middlewares/errorHandler.middleware');
-const allowedOriginPattern =
-  /^https:\/\/pilah-pinter-fe(-[\w-]+)?\.vercel\.app$/;
+// const allowedOriginPattern =
+//   /^https:\/\/pilah-pinter-fe(-[\w-]+)?\.vercel\.app$/;
 
 const app = express();
+app.use(helmet());
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (
-        !origin ||
-        origin === "http://localhost:5173" ||
-        allowedOriginPattern.test(origin)
-      ) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
+      callback(null, true); // izinkan origin manapun
     },
     credentials: true,
   }),
 );
+
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       if (
+//         !origin ||
+//         origin === "http://localhost:5173" ||
+//         allowedOriginPattern.test(origin)
+//       ) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//     credentials: true,
+//   }),
+// );
 
 
 app.use(morgan('dev'));
