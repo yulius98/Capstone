@@ -14,15 +14,15 @@ const errorHandler = require('./middlewares/errorHandler.middleware');
 const app = express();
 
 app.use(helmet());
-const allowedOrigins = [
+const allowedOrigins = new Set([
   "http://localhost:5173",
   "https://pilah-pinter-fe.vercel.app",
-];
+]);
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin || allowedOrigins.has(origin)) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
