@@ -9,7 +9,7 @@ exports.findAll = (skip, take) => {
     skip,
     take,
     include: { user: true, jenisSampah: true },
-    orderBy: { createdAt: 'desc' },
+    orderBy: { createdAt: "desc" },
   });
 };
 
