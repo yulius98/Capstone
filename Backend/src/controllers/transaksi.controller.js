@@ -13,9 +13,7 @@ exports.getAllTransaksi = async (req, res, next) => {
 
 exports.getTransaksiById = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const result = await transaksiService.getTransaksiById(Number(id));
-    return success(res, result);
+    return success(res, req.transaksi);
   } catch (err) {
     next(err);
   }
@@ -23,8 +21,7 @@ exports.getTransaksiById = async (req, res, next) => {
 
 exports.getGambar = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const gambarPath = await transaksiService.getGambarPath(Number(id));
+    const gambarPath = transaksiService.getGambarPath(req.transaksi.gambarPath);
     return res.sendFile(gambarPath);
   } catch (err) {
     next(err);
@@ -33,8 +30,7 @@ exports.getGambar = async (req, res, next) => {
 
 exports.postSubmitTransaksi = async (req, res, next) => {
   try {
-    const { id } = req.body;
-    const result = await transaksiService.postSubmitTransaksi(id);
+    const result = await transaksiService.postSubmitTransaksi(req.transaksi);
     return success(res, result, 'Transaksi berhasil disubmit!');
   } catch (err) {
     next(err);

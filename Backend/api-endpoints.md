@@ -7,6 +7,10 @@ Semua endpoint (kecuali Auth) memerlukan header:
 Authorization: Bearer <accessToken>
 ```
 
+Role yang dipakai di project ini:
+- `1` = User
+- `2` = Admin
+
 ---
 
 ## Auth (`/api/auth`)
@@ -363,7 +367,10 @@ Authorization: Bearer <accessToken>
 | Method | Endpoint | Auth | Deskripsi |
 |--------|----------|------|-----------|
 | GET | `/api/transaksi` | JWT | Lihat semua transaksi (pagination) |
-| GET | `/api/transaksi/user/:userId` | JWT | Lihat transaksi berdasarkan user (pagination) |
+| GET | `/api/transaksi/user/:userId` | JWT | Lihat transaksi berdasarkan user (pagination, hanya `sudahFinal = true`) |
+| GET | `/api/transaksi/:id` | JWT | Detail transaksi milik sendiri |
+| GET | `/api/transaksi/:id/gambar` | JWT | Ambil file gambar transaksi milik sendiri |
+| POST | `/api/transaksi/:id/submit` | JWT | Finalisasi transaksi milik sendiri |
 
 **Query params:**
 | Param | Type | Default | Keterangan |
@@ -389,6 +396,7 @@ Authorization: Bearer <accessToken>
         "hargaPerKg": 5000,
         "nominal": 12500,
         "gambarPath": "filename.jpg",
+        "sudahFinal": true,
         "createdAt": "2026-07-05T00:00:00.000Z",
         "user": { "id": 3, "nama": "string", "email": "string" },
         "jenisSampah": { "id": 3, "kategori": "logam", "hargaPerKg": 5000 }
@@ -431,4 +439,4 @@ Authorization: Bearer <accessToken>
 | 15 | GET | `/api/transaksi/:id` | ✓ | Detail transaksi |
 | 16 | GET | `/api/transaksi/user/:userId` | ✓ | Transaksi per user (pagination) | 
 | 17 | GET | `/api/transaksi/:id/gambar` | ✓ | Ambil file gambar transaksi |
-| 18 | POST | `/api/transaksi/submit` | ✓ | Submit/finalisasi transaksi |
+| 18 | POST | `/api/transaksi/:id/submit` | ✓ | Submit/finalisasi transaksi |
