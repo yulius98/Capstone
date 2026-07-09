@@ -17,9 +17,16 @@ exports.countAll = () => {
   return prisma.transaksi.count();
 };
 
+exports.findById = (id) => {
+  return prisma.transaksi.findUnique({
+    where: { id },
+    include: { jenisSampah: true },
+  });
+};
+
 exports.findByUserId = (userId, skip, take) => {
   return prisma.transaksi.findMany({
-    where: { userId },
+    where: { userId, sudahFinal: true },
     skip,
     take,
     include: { jenisSampah: true },
@@ -28,5 +35,12 @@ exports.findByUserId = (userId, skip, take) => {
 };
 
 exports.countByUserId = (userId) => {
-  return prisma.transaksi.count({ where: { userId } });
+  return prisma.transaksi.count({ where: { userId, sudahFinal: true } });
+};
+
+exports.submitTransaksi = (id) => {
+  return prisma.transaksi.update({
+    where: { id },
+    data: { sudahFinal: true },
+  });
 };

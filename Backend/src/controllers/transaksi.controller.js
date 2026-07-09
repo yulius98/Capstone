@@ -11,6 +11,32 @@ exports.getAllTransaksi = async (req, res, next) => {
   }
 };
 
+exports.getTransaksiById = async (req, res, next) => {
+  try {
+    return success(res, req.transaksi);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getGambar = async (req, res, next) => {
+  try {
+    const gambarPath = transaksiService.getGambarPath(req.transaksi.gambarPath);
+    return res.sendFile(gambarPath);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.postSubmitTransaksi = async (req, res, next) => {
+  try {
+    const result = await transaksiService.postSubmitTransaksi(req.transaksi);
+    return success(res, result, 'Transaksi berhasil disubmit!');
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.getTransaksiByUser = async (req, res, next) => {
   try {
     const { userId } = req.params;
