@@ -15,12 +15,12 @@ services:
       timeout: 5s
       retries: 5
 
-  mock-ai:
-    build: ./Mock-AI
-    ports:
-      - "8000:8000"
-    volumes:
-      - mock_ai_uploads:/app/mock-uploads
+  # waste-classifier:
+  #   build: ./waste_classifier
+  #   ports:
+  #     - "8000:8000"
+  #   volumes:
+  #     - waste_model_data:/app/models  
 
   backend:
     build: ./Backend
@@ -34,17 +34,16 @@ services:
       JWT_ACCESS_EXPIRES_IN: 1h
       JWT_REFRESH_SECRET: "41957a282550e9aba713ad7abc43274dbdfd1018a8eea0325740f73d043cce52b0d9532393d224d99b5a9fc813dd529cc0c2d373bcc33b9c5d0511d929c4acb0"
       JWT_REFRESH_EXPIRES_IN: 30d
-      AI_SERVICE_URL: "http://mock-ai:8000/predict"
+      AI_SERVICE_URL: "http://waste-classifier:8000/predict"
       AI_SERVICE_TIMEOUT: 15000
     volumes:
       - backend_uploads:/app/src/uploads
     depends_on:
       postgres:
         condition: service_healthy
-      mock-ai:
+      waste-classifier:
         condition: service_started
 
 volumes:
   postgres_data:
   backend_uploads:
-  mock_ai_uploads:
