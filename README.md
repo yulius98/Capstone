@@ -181,13 +181,11 @@ Menambahkan data awal setelah migrasi:
 | Role | Admin |
 
 **Jenis Sampah:**
-| Kategori | Harga/Kg |
-|----------|----------|
-| Plastik | Rp 2.000 |
-| Kertas | Rp 1.500 |
-| Logam | Rp 5.000 |
-| Organik | Rp 8.000 |
-| Kaca | Rp 6.000 |
+| Kategori  | Harga/Kg |
+|-----------|----------|
+| Organik   | Rp 100   |
+| Anorganik | Rp 50    |
+| Lainnya   | Rp 50    |
 
 ## Soft Delete
 
