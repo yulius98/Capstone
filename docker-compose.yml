@@ -15,12 +15,10 @@ services:
       timeout: 5s
       retries: 5
 
-  # waste-classifier:
-  #   build: ./waste_classifier
-  #   ports:
-  #     - "8000:8000"
-  #   volumes:
-  #     - waste_model_data:/app/models  
+  waste-classifier:
+    build: ./waste_classifier
+    ports:
+      - "8000:8000"
 
   backend:
     build: ./Backend
@@ -43,6 +41,21 @@ services:
         condition: service_healthy
       waste-classifier:
         condition: service_started
+
+  db-seeder:
+    image: postgres:16-alpine
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGHOST: postgres
+      PGPORT: "5432"
+      PGUSER: postgres
+      PGPASSWORD: Laravel12
+      PGDATABASE: bank_sampah
+    volumes:
+      - ./db-init:/seed
+    entrypoint: ["sh", "/seed/seed.sh"]
 
 volumes:
   postgres_data:

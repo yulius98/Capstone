@@ -1,0 +1,3 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/waste_classifier/venv/Scripts/python.exe"
+}
