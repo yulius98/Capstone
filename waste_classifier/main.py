@@ -11,7 +11,16 @@ import numpy as np
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
 from PIL import Image, UnidentifiedImageError
-import tensorflow as tf
+
+# ── Fallback import: pakai tflite_runtime di server (ringan, tanpa AVX),
+# fallback ke tensorflow di lokal Windows untuk keperluan testing/development ──
+try:
+    import tflite_runtime.interpreter as tflite
+    logging.info("Menggunakan tflite_runtime")
+except ImportError:
+    import tensorflow as tf
+    tflite = tf.lite
+    logging.info("tflite_runtime tidak ditemukan, fallback ke tensorflow.lite")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("waste_classifier_api")
@@ -21,7 +30,9 @@ MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
 ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/jpg", "image/png", "image/webp"}
 ERR_INVALID_IMAGE = "File harus berupa gambar"
 
-model = None
+interpreter = None
+input_details = None
+output_details = None
 class_names = None
 image_size = None
 rescale = None
@@ -29,10 +40,13 @@ rescale = None
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    global model, class_names, image_size, rescale
+    global interpreter, input_details, output_details, class_names, image_size, rescale
 
-    model = tf.keras.models.load_model(MODELS_DIR / "waste_classifier.keras")
-    logger.info("Model loaded.")
+    interpreter = tflite.Interpreter(model_path=str(MODELS_DIR / "waste_classifier.tflite"))
+    interpreter.allocate_tensors()
+    input_details = interpreter.get_input_details()
+    output_details = interpreter.get_output_details()
+    logger.info("Model TFLite loaded.")
 
     class_names = json.loads(
         await asyncio.to_thread((MODELS_DIR / "class_names.json").read_text)
@@ -90,7 +104,6 @@ async def predict(file: Annotated[UploadFile, File()]):
     try:
         input_array = preprocess_image(raw_bytes)
     except UnidentifiedImageError:
-        # File lolos cek content-type tapi ternyata bukan gambar valid (spoofed)
         return JSONResponse(
             status_code=400,
             content={"detail": ERR_INVALID_IMAGE},
@@ -103,7 +116,9 @@ async def predict(file: Annotated[UploadFile, File()]):
         )
 
     try:
-        probabilities = model.predict(input_array, verbose=0)[0]
+        interpreter.set_tensor(input_details[0]["index"], input_array)
+        interpreter.invoke()
+        probabilities = interpreter.get_tensor(output_details[0]["index"])[0]
         predicted_idx = int(np.argmax(probabilities))
         confidence = float(probabilities[predicted_idx])
         kategori = class_names[predicted_idx]
@@ -122,4 +137,4 @@ async def predict(file: Annotated[UploadFile, File()]):
 
 @app.get("/health")
 def health_check():
-    return {"status": "ok", "model_loaded": model is not None}
+    return {"status": "ok", "model_loaded": interpreter is not None}

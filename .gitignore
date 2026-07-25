@@ -3,3 +3,4 @@ node_modules/
 venv/
 generated/
 gap_FE_dan_BE.md
+waste_classifier/requirements-dev.txt

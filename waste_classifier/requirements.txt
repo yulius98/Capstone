@@ -1,8 +1,6 @@
 fastapi==0.115.0
 uvicorn[standard]==0.32.0
-tensorflow-cpu==2.21.0
+tflite-runtime==2.14.0
 pillow==11.3.0
 python-multipart==0.0.12
-numpy==2.2.6
-ml-dtypes==0.5.3
-protobuf==7.35.1
+numpy==1.26.4

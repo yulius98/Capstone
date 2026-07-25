@@ -359,7 +359,6 @@ Data yang di-seed:
 | Role | Admin |
 
 **Jenis Sampah:**
-<<<<<<< HEAD
 | Kategori | Harga/Kg |
 |----------|----------|
 | organik | Rp 50 |
@@ -380,13 +379,6 @@ Jika ingin menjalankan ulang seed:
 ```bash
 docker compose up --build db-seeder
 ```
-=======
-| Kategori  | Harga/Kg |
-|-----------|----------|
-| Organik   | Rp 100   |
-| Anorganik | Rp 50    |
-| Lainnya   | Rp 50    |
->>>>>>> ff09c300491666e005a4de4ad03dcd4ff7bddcae
 
 ## Soft Delete
 
