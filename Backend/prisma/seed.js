@@ -23,18 +23,8 @@ async function main() {
     skipDuplicates: true,
   });
 
-  const hashedPassword = await bcrypt.hash("Capstone123", 10);
-
-  await prisma.user.upsert({
-    where: { email: 'admin@pilahpinter.com' },
-    update: {},
-    create: {
-      nama: 'Admin',
-      email: 'admin@pilahpinter.com',
-      password: hashedPassword,
-      roleId: 2,
-    },
-  });
+  
+  
 }
 
 main()
