@@ -351,13 +351,6 @@ Data yang di-seed:
 | User | 1 |
 | Admin | 2 |
 
-**Admin User:**
-| Field | Value |
-|-------|-------|
-| Email | admin@pilahpinter.com |
-| Password | --------- |
-| Role | Admin |
-
 **Jenis Sampah:**
 | Kategori | Harga/Kg |
 |----------|----------|
