@@ -122,6 +122,24 @@ async def predict(file: Annotated[UploadFile, File()]):
         predicted_idx = int(np.argmax(probabilities))
         confidence = float(probabilities[predicted_idx])
         kategori = class_names[predicted_idx]
+
+        sorted_indices = np.argsort(probabilities)[::-1]
+        second_idx = sorted_indices[1]
+        second_kategori = class_names[second_idx]
+        second_confidence = float(probabilities[second_idx])
+        margin = confidence - second_confidence
+
+        if margin > 0.7:
+            kepastian = "tinggi"
+        elif margin > 0.3:
+            kepastian = "sedang"
+        else:
+            kepastian = "rendah"
+
+        all_probabilities = {
+            class_names[i]: round(float(probabilities[i]), 4)
+            for i in range(len(class_names))
+        }
     except Exception:
         logger.exception("Gagal saat inference model")
         return JSONResponse(
@@ -132,6 +150,13 @@ async def predict(file: Annotated[UploadFile, File()]):
     return {
         "kategori": kategori,
         "confidence": round(confidence, 4),
+        "all_probabilities": all_probabilities,
+        "alternatif": {
+            "kategori": second_kategori,
+            "confidence": round(second_confidence, 4),
+        },
+        "margin": round(margin, 4),
+        "kepastian": kepastian,
     }
 
 
